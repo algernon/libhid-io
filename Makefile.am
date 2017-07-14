@@ -47,6 +47,7 @@ endif
 check_libhid_io_srcs		= \
   tests/check_io.c        \
   tests/check_packet.c    \
+  tests/tests.c           \
   tests/check_libhid-io.c
 
 # -- Extra files to distribute --

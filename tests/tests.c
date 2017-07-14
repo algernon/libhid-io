@@ -15,31 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-START_TEST(test_hidio_io_basics) {
-  test_hidio_io_t io;
-  uint8_t test_data[16];
+#define TEST_DATA_MAX 1024
 
-  test_io_setup(&io);
-  memset(test_data, 42, sizeof(test_data));
+typedef struct {
+  hidio_io_t parent;
 
-  io.parent.write(&io.parent, test_data, sizeof(test_data));
-  ck_assert (memcmp (io.out_data, test_data, sizeof(test_data)) == 0);
-  ck_assert (io.out_data[sizeof(test_data)] == 0);
+  uint8_t in_data[TEST_DATA_MAX];
+  uint8_t out_data[TEST_DATA_MAX];
+} test_hidio_io_t;
 
-  memset(test_data, 0, sizeof(test_data));
-  memcpy(io.in_data, io.out_data, sizeof(test_data));
-
-  io.parent.read(&io.parent, test_data, sizeof(test_data));
-  ck_assert (memcmp (io.in_data, test_data, sizeof(test_data)) == 0);
+void test_io_read(hidio_io_t *self, uint8_t *data, uint16_t data_length) {
+  test_hidio_io_t *s = (test_hidio_io_t *)self;
+  memcpy(data, s->in_data, data_length);
 }
-END_TEST
 
-static TCase *test_hidio_io (void)
-{
-  TCase *tests;
+void test_io_write(hidio_io_t *self, uint8_t *data, uint16_t data_length) {
+  test_hidio_io_t *s = (test_hidio_io_t *)self;
+  memcpy(s->out_data, data, data_length);
+}
 
-  tests = tcase_create ("Low-level IO");
-  tcase_add_test (tests, test_hidio_io_basics);
-
-  return tests;
+void test_io_setup(test_hidio_io_t *io) {
+  io->parent.read = test_io_read;
+  io->parent.write = test_io_write;
+  memset(io->in_data, 0, sizeof(io->in_data));
+  memset(io->out_data, 0, sizeof(io->out_data));
 }

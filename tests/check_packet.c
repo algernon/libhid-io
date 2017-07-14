@@ -43,9 +43,10 @@ START_TEST(test_hidio_packet_header_io) {
   test_io_setup(&io);
 
   hidio_packet_header_write(&io.parent, &w_header);
-  ck_assert(memcmp(io.data, &w_header, sizeof(w_header)) == 0);
+  ck_assert(memcmp(io.out_data, &w_header, sizeof(w_header)) == 0);
 
   memset(&r_header, 0, sizeof(r_header));
+  memcpy(io.in_data, io.out_data, sizeof(r_header));
 
   hidio_packet_header_read(&io.parent, &r_header);
   ck_assert(memcmp(&r_header, &w_header, sizeof(r_header)) == 0);

@@ -19,6 +19,7 @@
 #include <check.h>
 #include <stdlib.h>
 
+#include "tests.c"
 #include "check_io.c"
 #include "check_packet.c"
 
