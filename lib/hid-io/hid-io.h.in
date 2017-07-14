@@ -25,3 +25,4 @@
 
 #include <hid-io/io.h>
 #include <hid-io/packet.h>
+#include <hid-io/command.h>

@@ -16,11 +16,13 @@ lib_libhid_io_la_CFLAGS       = ${AM_CFLAGS}
 lib_libhid_io_la_LDFLAGS      = -version-info ${HIDIO_LT_VERSION}
 
 pkginclude_HEADERS		        = \
+  lib/hid-io/command.h          \
   lib/hid-io/guards.h           \
   lib/hid-io/io.h               \
   lib/hid-io/packet.h           \
   lib/hid-io/hid-io.h
 lib_libhid_io_la_SOURCES      = \
+  lib/hid-io/command.c          \
   lib/hid-io/packet.c
 
 if HAVE_VERSIONING
@@ -45,6 +47,7 @@ check_PROGRAMS			= ${TESTS}
 endif
 
 check_libhid_io_srcs		= \
+  tests/check_command.c   \
   tests/check_io.c        \
   tests/check_packet.c    \
   tests/tests.c           \

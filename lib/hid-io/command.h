@@ -15,32 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <hid-io/hid-io.h>
-#include <check.h>
-#include <stdlib.h>
+#pragma once
 
-#include "tests.c"
-#include "check_io.c"
-#include "check_packet.c"
-#include "check_command.c"
+#include <hid-io/guards.h>
+#include <hid-io/io.h>
+#include <hid-io/packet.h>
 
-int main(void) {
-  Suite *suite;
-  SRunner *runner;
+HIDIO_CPP_GUARD_START
 
-  int nfailed;
+const hidio_packet_t *hidio_command_supported_ids_response_create(hidio_io_t *io, const hidio_packet_t *in_packet);
+const uint8_t *hidio_command_supported_ids_list_from_response(const hidio_packet_t *response);
 
-  suite = suite_create ("hid-io library tests");
-
-  suite_add_tcase (suite, test_hidio_io());
-  suite_add_tcase (suite, test_hidio_packet());
-  suite_add_tcase (suite, test_hidio_command());
-
-  runner = srunner_create (suite);
-
-  srunner_run_all (runner, CK_ENV);
-  nfailed = srunner_ntests_failed (runner);
-  srunner_free (runner);
-
-  return (nfailed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
-}
+HIDIO_CPP_GUARD_END

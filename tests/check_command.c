@@ -15,32 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <hid-io/hid-io.h>
-#include <check.h>
-#include <stdlib.h>
+START_TEST(test_hidio_command_process_supported_ids) {
+  hidio_packet_t in_packet;
+  const hidio_packet_t *out_packet;
+  test_hidio_io_t io;
+  const uint8_t *ids;
 
-#include "tests.c"
-#include "check_io.c"
-#include "check_packet.c"
-#include "check_command.c"
+  test_io_setup(&io);
 
-int main(void) {
-  Suite *suite;
-  SRunner *runner;
+  out_packet = hidio_command_supported_ids_response_create(&io.parent, &in_packet);
+  ck_assert(out_packet != NULL);
+  ck_assert_uint_eq(hidio_packet_data_length(out_packet), 1);
 
-  int nfailed;
+  ids = hidio_command_supported_ids_list_from_response(out_packet);
+  ck_assert (ids != NULL);
+  ck_assert_uint_eq(ids[0], 0);
+}
+END_TEST
 
-  suite = suite_create ("hid-io library tests");
+static TCase *test_hidio_command (void)
+{
+  TCase *tests;
 
-  suite_add_tcase (suite, test_hidio_io());
-  suite_add_tcase (suite, test_hidio_packet());
-  suite_add_tcase (suite, test_hidio_command());
+  tests = tcase_create ("Commands");
+  tcase_add_test (tests, test_hidio_command_process_supported_ids);
 
-  runner = srunner_create (suite);
-
-  srunner_run_all (runner, CK_ENV);
-  nfailed = srunner_ntests_failed (runner);
-  srunner_free (runner);
-
-  return (nfailed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return tests;
 }

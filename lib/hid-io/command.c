@@ -16,31 +16,22 @@
  */
 
 #include <hid-io/hid-io.h>
-#include <check.h>
-#include <stdlib.h>
 
-#include "tests.c"
-#include "check_io.c"
-#include "check_packet.c"
-#include "check_command.c"
+const hidio_packet_t *hidio_command_supported_ids_response_create(hidio_io_t *io, const hidio_packet_t *in_packet) {
+  static hidio_packet_t r;
 
-int main(void) {
-  Suite *suite;
-  SRunner *runner;
+  r.header.type = HIDIO_PACKET_TYPE_ACK;
+  r.header.is_continued = 0;
+  r.header.is_id_32bit = 0;
+  r.header.reserved = 0;
+  r.header.data_length_upper = 0;
+  r.header.data_length_lower = 1;
+  r.data_id16.id = 0;
+  r.data_id16.data[0] = 0;
 
-  int nfailed;
+  return &r;
+}
 
-  suite = suite_create ("hid-io library tests");
-
-  suite_add_tcase (suite, test_hidio_io());
-  suite_add_tcase (suite, test_hidio_packet());
-  suite_add_tcase (suite, test_hidio_command());
-
-  runner = srunner_create (suite);
-
-  srunner_run_all (runner, CK_ENV);
-  nfailed = srunner_ntests_failed (runner);
-  srunner_free (runner);
-
-  return (nfailed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+const uint8_t *hidio_command_supported_ids_list_from_response(const hidio_packet_t *response) {
+  return hidio_packet_data(response);
 }
