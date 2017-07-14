@@ -1,0 +1,10 @@
+HIDIO_LOCAL {
+local:
+  *;
+};
+
+HIDIO_1.0 {
+  hidio_packet_data_length;
+  hidio_packet_header_read;
+  hidio_packet_header_write;
+};
