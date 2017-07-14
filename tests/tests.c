@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define TEST_DATA_MAX 1024
+#define TEST_DATA_MAX 64
 
 typedef struct {
   hidio_io_t parent;

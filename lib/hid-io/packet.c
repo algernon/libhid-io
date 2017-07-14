@@ -17,14 +17,30 @@
 
 #include <hid-io/hid-io.h>
 
-const uint16_t hidio_packet_data_length(const hidio_packet_header_t *packet_header) {
-  return packet_header->data_length_upper * 256 + packet_header->data_length_lower;
+const uint16_t hidio_packet_data_length(const hidio_packet_t *packet) {
+  return packet->header.data_length_upper * 256 + packet->header.data_length_lower;
 }
 
-void hidio_packet_header_read(hidio_io_t *io, hidio_packet_header_t *packet_header) {
-  io->read(io, (uint8_t *)packet_header, sizeof(hidio_packet_header_t));
+const uint8_t *hidio_packet_data(const hidio_packet_t *packet) {
+  if (packet->header.is_id_32bit) {
+    return &packet->data_id32.data[0];
+  } else {
+    return &packet->data_id16.data[0];
+  }
 }
 
-void hidio_packet_header_write(hidio_io_t *io, const hidio_packet_header_t *packet_header) {
-  io->write(io, (uint8_t *)packet_header, sizeof(hidio_packet_header_t));
+const uint32_t hidio_packet_id(const hidio_packet_t *packet) {
+  if (packet->header.is_id_32bit) {
+    return packet->data_id32.id;
+  } else {
+    return packet->data_id16.id;
+  }
+}
+
+int8_t hidio_packet_read(hidio_io_t *io, hidio_packet_t *packet) {
+  io->read(io, (uint8_t *)packet, sizeof(hidio_packet_t));
+}
+
+int8_t hidio_packet_write(hidio_io_t *io, const hidio_packet_t *packet) {
+  io->write(io, (uint8_t *)packet, sizeof(hidio_packet_t));
 }

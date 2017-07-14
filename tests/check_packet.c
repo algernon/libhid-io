@@ -15,41 +15,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-START_TEST(test_hidio_packet_data_length)
-{
-  hidio_packet_header_t packet_header;
+START_TEST(test_hidio_packet_data_length) {
+  hidio_packet_t packet;
 
-  memset(&packet_header, 0, sizeof(packet_header));
+  memset(&packet, 0, sizeof(packet));
 
-  packet_header.data_length_lower = 128;
-  ck_assert_uint_eq(hidio_packet_data_length(&packet_header), 128);
+  packet.header.data_length_lower = 128;
+  ck_assert_uint_eq(hidio_packet_data_length(&packet), 128);
 
-  packet_header.data_length_upper = 1;
-  ck_assert_uint_eq(hidio_packet_data_length(&packet_header), 384);
+  packet.header.data_length_upper = 1;
+  ck_assert_uint_eq(hidio_packet_data_length(&packet), 384);
 }
 END_TEST
 
-START_TEST(test_hidio_packet_header_io) {
-  hidio_packet_header_t w_header, r_header;
+START_TEST(test_hidio_packet_io) {
+  hidio_packet_t w, r;
   test_hidio_io_t io;
 
-  w_header.type = HIDIO_PACKET_TYPE_DATA;
-  w_header.is_continued = 0;
-  w_header.is_id_32bit = 0;
-  w_header.reserved = 0;
-  w_header.data_length_upper = 0;
-  w_header.data_length_lower = 16;
+  w.header.type = HIDIO_PACKET_TYPE_DATA;
+  w.header.is_continued = 0;
+  w.header.is_id_32bit = 0;
+  w.header.reserved = 0;
+  w.header.data_length_upper = 0;
+  w.header.data_length_lower = 16;
 
   test_io_setup(&io);
 
-  hidio_packet_header_write(&io.parent, &w_header);
-  ck_assert(memcmp(io.out_data, &w_header, sizeof(w_header)) == 0);
+  hidio_packet_write(&io.parent, &w);
+  ck_assert(memcmp(io.out_data, &w, sizeof(w)) == 0);
 
-  memset(&r_header, 0, sizeof(r_header));
-  memcpy(io.in_data, io.out_data, sizeof(r_header));
+  memcpy(io.in_data, io.out_data, sizeof(r));
 
-  hidio_packet_header_read(&io.parent, &r_header);
-  ck_assert(memcmp(&r_header, &w_header, sizeof(r_header)) == 0);
+  hidio_packet_read(&io.parent, &r);
+  ck_assert(memcmp(&r, &w, sizeof(r)) == 0);
+}
+END_TEST
+
+START_TEST(test_hidio_packet_id) {
+  hidio_packet_t p;
+
+  p.header.is_id_32bit = 0;
+  p.data_id16.id = 1024;
+
+  ck_assert_uint_eq(hidio_packet_id(&p), 1024);
+
+  p.header.is_id_32bit = 1;
+  p.data_id32.id = 65538;
+
+  ck_assert_uint_eq(hidio_packet_id(&p), 65538);
 }
 END_TEST
 
@@ -59,7 +72,8 @@ static TCase *test_hidio_packet (void)
 
   tests = tcase_create ("Packets");
   tcase_add_test (tests, test_hidio_packet_data_length);
-  tcase_add_test (tests, test_hidio_packet_header_io);
+  tcase_add_test (tests, test_hidio_packet_io);
+  tcase_add_test (tests, test_hidio_packet_id);
 
   return tests;
 }

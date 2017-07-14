@@ -40,11 +40,31 @@ typedef struct {
   uint8_t             data_length_lower;
 } __attribute__((packed)) hidio_packet_header_t;
 
-typedef uint32_t hidio_id_t;
+typedef union {
+  struct {
+    hidio_packet_header_t header;
+    union {
+      struct {
+        uint8_t data[0];
+      } __attribute__((packed)) data_id0;
+      struct {
+        uint16_t id;
+        uint8_t data[0];
+      } __attribute__((packed)) data_id16;
+      struct {
+        uint32_t id;
+        uint8_t data[0];
+      } __attribute__((packed)) data_id32;
+    } __attribute__((packed));
+  } __attribute__((packed));
+  uint8_t raw[64];
+} __attribute__((packed)) hidio_packet_t;
 
-const uint16_t hidio_packet_data_length(const hidio_packet_header_t *packet_header);
+const uint16_t hidio_packet_data_length(const hidio_packet_t *packet);
+const uint8_t *hidio_packet_data(const hidio_packet_t *packet);
+const uint32_t hidio_packet_id(const hidio_packet_t *packet);
 
-void hidio_packet_header_read(hidio_io_t *io, hidio_packet_header_t *packet_header);
-void hidio_packet_header_write(hidio_io_t *io, const hidio_packet_header_t *packet_header);
+int8_t hidio_packet_read(hidio_io_t *io, hidio_packet_t *packet);
+int8_t hidio_packet_write(hidio_io_t *io, const hidio_packet_t *packet);
 
 HIDIO_CPP_GUARD_END

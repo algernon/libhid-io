@@ -4,7 +4,10 @@ local:
 };
 
 HIDIO_1.0 {
+  hidio_packet_data;
   hidio_packet_data_length;
-  hidio_packet_header_read;
-  hidio_packet_header_write;
+  hidio_packet_id;
+
+  hidio_packet_read;
+  hidio_packet_write;
 };
