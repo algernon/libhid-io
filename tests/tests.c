@@ -21,22 +21,35 @@ typedef struct {
   hidio_io_t parent;
 
   uint8_t in_data[TEST_DATA_MAX];
+  uint16_t in_pos;
   uint8_t out_data[TEST_DATA_MAX];
+  uint16_t out_pos;
 } test_hidio_io_t;
 
 void test_io_read(hidio_io_t *self, uint8_t *data, uint16_t data_length) {
   test_hidio_io_t *s = (test_hidio_io_t *)self;
-  memcpy(data, s->in_data, data_length);
+  memcpy(data, s->in_data + s->in_pos, data_length);
+  s->in_pos += data_length;
 }
 
 void test_io_write(hidio_io_t *self, uint8_t *data, uint16_t data_length) {
   test_hidio_io_t *s = (test_hidio_io_t *)self;
-  memcpy(s->out_data, data, data_length);
+  memcpy(s->out_data, data + s->out_pos, data_length);
+  s->out_pos += data_length;
+}
+
+void test_io_swap(test_hidio_io_t *io) {
+  uint8_t tmp[TEST_DATA_MAX];
+
+  memcpy(tmp, io->in_data, TEST_DATA_MAX);
+  memcpy(io->in_data, io->out_data, TEST_DATA_MAX);
+  memcpy(io->out_data, tmp, TEST_DATA_MAX);
 }
 
 void test_io_setup(test_hidio_io_t *io) {
   io->parent.read = test_io_read;
   io->parent.write = test_io_write;
+  io->in_pos = io->out_pos = 0;
   memset(io->in_data, 0, sizeof(io->in_data));
   memset(io->out_data, 0, sizeof(io->out_data));
 }

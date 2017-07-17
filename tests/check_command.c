@@ -15,21 +15,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-START_TEST(test_hidio_command_process_supported_ids) {
-  hidio_packet_t in_packet;
-  const hidio_packet_t *out_packet;
+START_TEST(test_hidio_command_supported_ids_ack) {
+  uint8_t supported_ids[] = {0, 1};
   test_hidio_io_t io;
   const uint8_t *ids;
 
+  hidio_packet_reset();
+
   test_io_setup(&io);
+  hidio_command_supported_ids_ack(&io.parent, sizeof(supported_ids), supported_ids);
 
-  out_packet = hidio_command_supported_ids_response_create(&io.parent, &in_packet);
-  ck_assert(out_packet != NULL);
-  ck_assert_uint_eq(hidio_packet_data_length(out_packet), 1);
+  test_io_swap(&io);
 
-  ids = hidio_command_supported_ids_list_from_response(out_packet);
-  ck_assert (ids != NULL);
+  hidio_packet_recv(&io.parent);
+
+  ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
+  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(supported_ids));
+  ids = hidio_packet_data();
   ck_assert_uint_eq(ids[0], 0);
+  ck_assert_uint_eq(ids[1], 1);
+  ck_assert(hidio_packet_is_continued() == 0);
 }
 END_TEST
 
@@ -38,7 +43,7 @@ static TCase *test_hidio_command (void)
   TCase *tests;
 
   tests = tcase_create ("Commands");
-  tcase_add_test (tests, test_hidio_command_process_supported_ids);
+  tcase_add_test (tests, test_hidio_command_supported_ids_ack);
 
   return tests;
 }

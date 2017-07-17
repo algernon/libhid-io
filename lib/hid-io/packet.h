@@ -31,40 +31,28 @@ typedef enum {
   HIDIO_PACKET_TYPE_SYNC
 } hidio_packet_type_t;
 
-typedef struct {
-  hidio_packet_type_t type:3;
-  uint8_t             is_continued:1; // is this a continued packet?
-  uint8_t             is_id_32bit:1;  // is the id 32bit? (16 otherwise)
-  uint8_t             reserved:1;
-  uint8_t             data_length_upper:2;
-  uint8_t             data_length_lower;
-} __attribute__((packed)) hidio_packet_header_t;
+typedef union hidio_packet_t hidio_packet_t;
 
-typedef union {
-  struct {
-    hidio_packet_header_t header;
-    union {
-      struct {
-        uint8_t data[0];
-      } __attribute__((packed)) data_id0;
-      struct {
-        uint16_t id;
-        uint8_t data[0];
-      } __attribute__((packed)) data_id16;
-      struct {
-        uint32_t id;
-        uint8_t data[0];
-      } __attribute__((packed)) data_id32;
-    } __attribute__((packed));
-  } __attribute__((packed));
-  uint8_t raw[64];
-} __attribute__((packed)) hidio_packet_t;
+hidio_packet_type_t hidio_packet_type(void);
+void hidio_packet_type_set(hidio_packet_type_t type);
 
-const uint16_t hidio_packet_data_length(const hidio_packet_t *packet);
-const uint8_t *hidio_packet_data(const hidio_packet_t *packet);
-const uint32_t hidio_packet_id(const hidio_packet_t *packet);
+uint16_t hidio_packet_data_length(void);
+const uint16_t hidio_packet_data_length_max(void);
+int8_t hidio_packet_data_length_set(const uint16_t length);
 
-int8_t hidio_packet_read(hidio_io_t *io, hidio_packet_t *packet);
-int8_t hidio_packet_write(hidio_io_t *io, const hidio_packet_t *packet);
+const uint8_t *hidio_packet_data(void);
+int8_t hidio_packet_data_set(const uint8_t *data);
+
+uint32_t hidio_packet_id(void);
+int8_t hidio_packet_id_set(const uint32_t id);
+
+uint8_t hidio_packet_is_continued(void);
+void hidio_packet_continued_set(const uint8_t is_continued);
+
+int8_t hidio_packet_recv(hidio_io_t *io);
+int8_t hidio_packet_send(hidio_io_t *io);
+
+void hidio_packet_swap(void);
+void hidio_packet_reset(void);
 
 HIDIO_CPP_GUARD_END

@@ -18,12 +18,11 @@
 #pragma once
 
 #include <hid-io/guards.h>
-#include <hid-io/io.h>
 #include <hid-io/packet.h>
 
 HIDIO_CPP_GUARD_START
 
-const hidio_packet_t *hidio_command_supported_ids_response_create(hidio_io_t *io, const hidio_packet_t *in_packet);
-const uint8_t *hidio_command_supported_ids_list_from_response(const hidio_packet_t *response);
+void hidio_command_supported_ids_ack(hidio_io_t *io, uint8_t n, uint8_t ids[]);
+const uint8_t *hidio_command_supported_ids_list_get(void);
 
 HIDIO_CPP_GUARD_END

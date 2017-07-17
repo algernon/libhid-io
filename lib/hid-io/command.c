@@ -17,21 +17,18 @@
 
 #include <hid-io/hid-io.h>
 
-const hidio_packet_t *hidio_command_supported_ids_response_create(hidio_io_t *io, const hidio_packet_t *in_packet) {
-  static hidio_packet_t r;
+// TODO: Implement package splitting
 
-  r.header.type = HIDIO_PACKET_TYPE_ACK;
-  r.header.is_continued = 0;
-  r.header.is_id_32bit = 0;
-  r.header.reserved = 0;
-  r.header.data_length_upper = 0;
-  r.header.data_length_lower = 1;
-  r.data_id16.id = 0;
-  r.data_id16.data[0] = 0;
+void hidio_command_supported_ids_ack(hidio_io_t *io, uint8_t n, uint8_t ids[]) {
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
+  hidio_packet_continued_set(0);
+  hidio_packet_id_set(0);
+  hidio_packet_data_length_set(n);
+  hidio_packet_data_set(ids);
 
-  return &r;
+  hidio_packet_send(io);
 }
 
-const uint8_t *hidio_command_supported_ids_list_from_response(const hidio_packet_t *response) {
-  return hidio_packet_data(response);
+const uint8_t *hidio_command_supported_ids_list_get(void) {
+  return hidio_packet_data();
 }
