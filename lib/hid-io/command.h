@@ -19,10 +19,39 @@
 
 #include <hid-io/guards.h>
 #include <hid-io/packet.h>
+#include <string.h>
 
 HIDIO_CPP_GUARD_START
 
-void hidio_command_supported_ids_ack(hidio_io_t *io, uint8_t n, uint8_t ids[]);
-const uint8_t *hidio_command_supported_ids_list_get(void);
+typedef struct hidio_command_t hidio_command_t;
+struct hidio_command_t {
+  hidio_packet_id_size_t id;
+
+  void (*process)(hidio_io_t *io, hidio_command_t *command);
+  void (*ack)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_size_t id);
+  void (*nak)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_size_t id);
+};
+
+extern hidio_command_t hidio_commands[];
+
+void hidio_command_no_payload_nak(hidio_io_t *io,
+                                  hidio_command_t *command,
+                                  hidio_packet_id_size_t id);
+void hidio_command_process(hidio_io_t *io);
+
+/* --- */
+void hidio_command_supported_ids_process(hidio_io_t *io,
+                                         hidio_command_t *command);
+void hidio_command_supported_ids_ack(hidio_io_t *io,
+                                     hidio_command_t *command,
+                                     hidio_packet_id_size_t id);
+
+#define HIDIO_COMMAND_SUPPORTED_IDS                                     \
+  {0x0000,                                                              \
+   hidio_command_supported_ids_process,                                 \
+   hidio_command_supported_ids_ack,                                     \
+   hidio_command_no_payload_nak}
+
+#define HIDIO_COMMAND_END {0, NULL, NULL, NULL}
 
 HIDIO_CPP_GUARD_END

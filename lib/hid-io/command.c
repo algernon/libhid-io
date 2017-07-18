@@ -16,19 +16,51 @@
  */
 
 #include <hid-io/hid-io.h>
+#include <string.h>
 
-// TODO: Implement package splitting
-
-void hidio_command_supported_ids_ack(hidio_io_t *io, uint8_t n, uint8_t ids[]) {
-  hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
+void hidio_command_no_payload_nak(hidio_io_t *io,
+                                  hidio_command_t *command,
+                                  hidio_packet_id_size_t id) {
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_NAK);
+  hidio_packet_id_set(id);
   hidio_packet_continued_set(0);
-  hidio_packet_id_set(0);
-  hidio_packet_data_length_set(n);
-  hidio_packet_data_set(ids);
-
+  hidio_packet_data_length_set(0);
   hidio_packet_send(io);
 }
 
-const uint8_t *hidio_command_supported_ids_list_get(void) {
-  return hidio_packet_data();
+void hidio_command_process(hidio_io_t *io) {
+  hidio_packet_id_size_t id = hidio_packet_id();
+
+  for (uint8_t i = 0; hidio_commands[i].process != NULL; i++) {
+    if (hidio_commands[i].id == id) {
+      return hidio_commands[i].process(io, &hidio_commands[i]);
+    }
+  }
+
+  return hidio_command_no_payload_nak(io, NULL, id);
+}
+
+/* --- 0x00 supported ids --- */
+
+void hidio_command_supported_ids_process(hidio_io_t *io,
+                                         hidio_command_t *command) {
+  command->ack(io, command, 0x0000);
+}
+
+void hidio_command_supported_ids_ack(hidio_io_t *io,
+                                     hidio_command_t *command,
+                                     hidio_packet_id_size_t id) {
+  uint8_t finished = 0;
+
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
+  hidio_packet_id_set(0);
+  hidio_packet_continued_set(1);
+
+  for (uint8_t i = 0; hidio_commands[i].process != NULL; i++) {
+    if (hidio_commands[i + 1].process == NULL)
+      hidio_packet_continued_set(0);
+    hidio_packet_data_length_set(sizeof(hidio_packet_id_size_t));
+    hidio_packet_data_set((uint8_t *)&hidio_commands[i].id);
+    hidio_packet_send(io);
+  }
 }

@@ -15,25 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+hidio_command_t hidio_commands[] = {
+  HIDIO_COMMAND_SUPPORTED_IDS,
+  HIDIO_COMMAND_END
+};
+
 START_TEST(test_hidio_command_supported_ids_ack) {
-  uint8_t supported_ids[] = {0, 1};
   test_hidio_io_t io;
   const uint8_t *ids;
 
   hidio_packet_reset();
 
   test_io_setup(&io);
-  hidio_command_supported_ids_ack(&io.parent, sizeof(supported_ids), supported_ids);
+  hidio_command_supported_ids_ack(&io.parent, NULL, 0);
 
   test_io_swap(&io);
 
   hidio_packet_recv(&io.parent);
 
   ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
-  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(supported_ids));
+  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_size_t));
   ids = hidio_packet_data();
   ck_assert_uint_eq(ids[0], 0);
-  ck_assert_uint_eq(ids[1], 1);
   ck_assert(hidio_packet_is_continued() == 0);
 }
 END_TEST
