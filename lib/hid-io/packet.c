@@ -27,7 +27,7 @@ typedef union hidio_packet_t {
       uint8_t             reserved:1;
       uint8_t             data_length_upper:2;
       uint8_t             data_length_lower;
-    } header;
+    } __attribute__((packed)) header;
 
     union {
       struct {
