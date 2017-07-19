@@ -17,6 +17,7 @@
 
 hidio_command_t hidio_commands[] = {
   HIDIO_COMMAND_SUPPORTED_IDS,
+  HIDIO_COMMAND_SUPPORTED_IDS,
   HIDIO_COMMAND_END
 };
 
@@ -34,9 +35,10 @@ START_TEST(test_hidio_command_supported_ids_ack) {
   hidio_packet_recv(&io.parent);
 
   ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
-  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_t));
+  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_t) * 2);
   ids = hidio_packet_data();
   ck_assert_uint_eq(ids[0], 0);
+  ck_assert_uint_eq(ids[1], 0);
   ck_assert(hidio_packet_is_continued() == 0);
 }
 END_TEST

@@ -54,13 +54,24 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
 
   hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
   hidio_packet_id_set(0);
-  hidio_packet_continued_set(1);
+  hidio_packet_continued_set(0);
+  hidio_packet_data_length_set(0);
 
   for (uint8_t i = 0; hidio_commands[i].process != NULL; i++) {
-    if (hidio_commands[i + 1].process == NULL)
-      hidio_packet_continued_set(0);
-    hidio_packet_data_length_set(sizeof(hidio_packet_id_t));
-    hidio_packet_data_set((uint8_t *)&hidio_commands[i].id);
+    if (hidio_packet_data_append((uint8_t *)&hidio_commands[i].id, sizeof(hidio_packet_id_t)) == 0) {
+      finished = 0;
+      continue;
+    }
+
+    hidio_packet_continued_set(1);
+    hidio_packet_send(io);
+
+    hidio_packet_continued_set(0);
+    hidio_packet_data_length_set(0);
+    finished = 1;
+  }
+
+  if (!finished) {
     hidio_packet_send(io);
   }
 }
