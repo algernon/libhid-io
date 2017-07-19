@@ -26,15 +26,15 @@
 HIDIO_CPP_GUARD_START
 
 #if SIZEOF_VOID_P == 1
-#define hidio_packet_id_size_t uint8_t
+#define hidio_packet_id_t uint8_t
 #endif
 
 #if SIZEOF_VOID_P == 2
-#define hidio_packet_id_size_t uint16_t
+#define hidio_packet_id_t uint16_t
 #endif
 
 #if SIZEOF_VOID_P >= 4
-#define hidio_packet_id_size_t uint32_t
+#define hidio_packet_id_t uint32_t
 #endif
 
 typedef enum {
@@ -56,8 +56,8 @@ int8_t hidio_packet_data_length_set(const uint16_t length);
 const uint8_t *hidio_packet_data(void);
 int8_t hidio_packet_data_set(const uint8_t *data);
 
-hidio_packet_id_size_t hidio_packet_id(void);
-int8_t hidio_packet_id_set(const hidio_packet_id_size_t id);
+hidio_packet_id_t hidio_packet_id(void);
+int8_t hidio_packet_id_set(const hidio_packet_id_t id);
 
 uint8_t hidio_packet_is_continued(void);
 void hidio_packet_continued_set(const uint8_t is_continued);

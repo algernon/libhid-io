@@ -34,7 +34,7 @@ START_TEST(test_hidio_command_supported_ids_ack) {
   hidio_packet_recv(&io.parent);
 
   ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
-  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_size_t));
+  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_t));
   ids = hidio_packet_data();
   ck_assert_uint_eq(ids[0], 0);
   ck_assert(hidio_packet_is_continued() == 0);

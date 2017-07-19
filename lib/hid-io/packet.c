@@ -105,14 +105,14 @@ int8_t hidio_packet_data_set(const uint8_t *data) {
   return 0;
 }
 
-hidio_packet_id_size_t hidio_packet_id(void) {
+hidio_packet_id_t hidio_packet_id(void) {
   if (incoming_packet.header.is_id_32bit)
-    return (hidio_packet_id_size_t)incoming_packet.data_id32.id;
+    return (hidio_packet_id_t)incoming_packet.data_id32.id;
   else
-    return (hidio_packet_id_size_t)incoming_packet.data_id16.id;
+    return (hidio_packet_id_t)incoming_packet.data_id16.id;
 }
 
-int8_t hidio_packet_id_set(const hidio_packet_id_size_t id) {
+int8_t hidio_packet_id_set(const hidio_packet_id_t id) {
 #if SIZEOF_VOID_P > 2
   if (id > 65535) {
     outgoing_packet.header.is_id_32bit = 1;

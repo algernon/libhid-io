@@ -20,7 +20,7 @@
 
 void hidio_command_no_payload_nak(hidio_io_t *io,
                                   hidio_command_t *command,
-                                  hidio_packet_id_size_t id) {
+                                  hidio_packet_id_t id) {
   hidio_packet_type_set(HIDIO_PACKET_TYPE_NAK);
   hidio_packet_id_set(id);
   hidio_packet_continued_set(0);
@@ -29,7 +29,7 @@ void hidio_command_no_payload_nak(hidio_io_t *io,
 }
 
 void hidio_command_process(hidio_io_t *io) {
-  hidio_packet_id_size_t id = hidio_packet_id();
+  hidio_packet_id_t id = hidio_packet_id();
 
   for (uint8_t i = 0; hidio_commands[i].process != NULL; i++) {
     if (hidio_commands[i].id == id) {
@@ -49,7 +49,7 @@ void hidio_command_supported_ids_process(hidio_io_t *io,
 
 void hidio_command_supported_ids_ack(hidio_io_t *io,
                                      hidio_command_t *command,
-                                     hidio_packet_id_size_t id) {
+                                     hidio_packet_id_t id) {
   uint8_t finished = 0;
 
   hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
@@ -59,7 +59,7 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
   for (uint8_t i = 0; hidio_commands[i].process != NULL; i++) {
     if (hidio_commands[i + 1].process == NULL)
       hidio_packet_continued_set(0);
-    hidio_packet_data_length_set(sizeof(hidio_packet_id_size_t));
+    hidio_packet_data_length_set(sizeof(hidio_packet_id_t));
     hidio_packet_data_set((uint8_t *)&hidio_commands[i].id);
     hidio_packet_send(io);
   }

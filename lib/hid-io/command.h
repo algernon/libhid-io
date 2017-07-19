@@ -25,18 +25,18 @@ HIDIO_CPP_GUARD_START
 
 typedef struct hidio_command_t hidio_command_t;
 struct hidio_command_t {
-  hidio_packet_id_size_t id;
+  hidio_packet_id_t id;
 
   void (*process)(hidio_io_t *io, hidio_command_t *command);
-  void (*ack)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_size_t id);
-  void (*nak)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_size_t id);
+  void (*ack)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_t id);
+  void (*nak)(hidio_io_t *io, hidio_command_t *command, hidio_packet_id_t id);
 };
 
 extern hidio_command_t hidio_commands[];
 
 void hidio_command_no_payload_nak(hidio_io_t *io,
                                   hidio_command_t *command,
-                                  hidio_packet_id_size_t id);
+                                  hidio_packet_id_t id);
 void hidio_command_process(hidio_io_t *io);
 
 /* --- */
@@ -44,7 +44,7 @@ void hidio_command_supported_ids_process(hidio_io_t *io,
                                          hidio_command_t *command);
 void hidio_command_supported_ids_ack(hidio_io_t *io,
                                      hidio_command_t *command,
-                                     hidio_packet_id_size_t id);
+                                     hidio_packet_id_t id);
 
 #define HIDIO_COMMAND_SUPPORTED_IDS                                     \
   {0x0000,                                                              \
