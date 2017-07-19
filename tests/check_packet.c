@@ -33,12 +33,34 @@ START_TEST(test_hidio_packet_data) {
 }
 END_TEST
 
+START_TEST(test_hidio_packet_data_append) {
+  uint8_t test_data[16];
+
+  memset(test_data, 42, sizeof(test_data));
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
+  hidio_packet_id_set(72000);
+  hidio_packet_data_length_set(sizeof(test_data));
+  hidio_packet_data_set(test_data);
+
+  hidio_packet_data_append(test_data, sizeof(test_data));
+
+  hidio_packet_swap();
+
+  ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
+  ck_assert_uint_eq(hidio_packet_id(), 72000);
+  ck_assert_uint_eq(hidio_packet_data_length(), sizeof(test_data) * 2);
+  ck_assert(memcmp(hidio_packet_data(), test_data, sizeof(test_data)) == 0);
+  ck_assert(memcmp(hidio_packet_data() + sizeof(test_data), test_data, sizeof(test_data)) == 0);
+}
+END_TEST
+
 static TCase *test_hidio_packet (void)
 {
   TCase *tests;
 
   tests = tcase_create ("Packets");
   tcase_add_test (tests, test_hidio_packet_data);
+  tcase_add_test (tests, test_hidio_packet_data_append);
 
   return tests;
 }

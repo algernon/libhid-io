@@ -55,6 +55,7 @@ int8_t hidio_packet_data_length_set(const uint16_t length);
 
 const uint8_t *hidio_packet_data(void);
 int8_t hidio_packet_data_set(const uint8_t *data);
+int8_t hidio_packet_data_append(const uint8_t *data, const uint16_t length);
 
 hidio_packet_id_t hidio_packet_id(void);
 int8_t hidio_packet_id_set(const hidio_packet_id_t id);
