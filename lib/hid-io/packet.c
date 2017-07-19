@@ -108,6 +108,9 @@ int8_t hidio_packet_data_set(const uint8_t *data) {
 int8_t hidio_packet_data_append(const uint8_t *data, const uint16_t length) {
   uint16_t size = __packet_size(&outgoing_packet);
 
+  if (size + length > hidio_packet_data_length_max())
+    return -1;
+
   if (outgoing_packet.header.is_id_32bit) {
     memcpy(&outgoing_packet.data_id32.data[size], data, length);
   } else {
