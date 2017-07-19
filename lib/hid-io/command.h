@@ -52,6 +52,25 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
    hidio_command_supported_ids_ack,                                     \
    hidio_command_no_payload_nak}
 
+/* --- */
+
+void hidio_command_get_info_process(hidio_io_t *io,
+                                    hidio_command_t *command);
+void hidio_command_get_info_ack(hidio_io_t *io,
+                                hidio_command_t *command,
+                                hidio_packet_id_t id);
+void hidio_command_get_info_nak(hidio_io_t *io,
+                                hidio_command_t *command,
+                                hidio_packet_id_t id);
+
+#define HIDIO_COMMAND_GET_INFO                  \
+  {0x0001,                                      \
+   hidio_command_get_info_process,              \
+   hidio_command_get_info_ack,                  \
+   hidio_command_get_info_nak}
+
+/* --- */
+
 #define HIDIO_COMMAND_END {0, NULL, NULL, NULL}
 
 HIDIO_CPP_GUARD_END

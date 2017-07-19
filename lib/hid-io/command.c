@@ -75,3 +75,68 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
     hidio_packet_send(io);
   }
 }
+
+/* --- 0x01 get info --- */
+void hidio_command_get_info_process(hidio_io_t *io,
+                                    hidio_command_t *command) {
+  uint8_t property = hidio_packet_data()[0];
+
+  switch (property) {
+  case 0x00 ... 0x05:
+    command->ack(io, command, 0x0001);
+    break;
+  default:
+    command->nak(io, command, 0x0001);
+    break;
+  }
+}
+
+void hidio_command_get_info_ack(hidio_io_t *io,
+                                hidio_command_t *command,
+                                hidio_packet_id_t id) {
+  uint8_t property = hidio_packet_data()[0];
+
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_ACK);
+  hidio_packet_id_set(0x01);
+  hidio_packet_continued_set(0);
+
+  switch (property) {
+  case 0x00 ... 0x02:
+    {
+      uint16_t v;
+
+      hidio_packet_data_length_set(sizeof(uint16_t));
+
+      switch (property) {
+      case 0x00:
+        v = HIDIO_PROTOCOL_VERSION_MAJOR;
+        break;
+      case 0x01:
+        v = HIDIO_PROTOCOL_VERSION_MINOR;
+        break;
+      case 0x02:
+        v = HIDIO_PROTOCOL_VERSION_PATCH;
+        break;
+      }
+      hidio_packet_data_set((uint8_t *)&v);
+
+      break;
+    }
+  case 0x03:
+    {
+      static const char *device_name = "test-device";
+
+      hidio_packet_data_length_set(strlen(device_name));
+      hidio_packet_data_set(device_name);
+      break;
+    }
+  }
+
+  hidio_packet_send(io);
+}
+
+void hidio_command_get_info_nak(hidio_io_t *io,
+                                hidio_command_t *command,
+                                hidio_packet_id_t id) {
+  hidio_command_no_payload_nak(io, NULL, id);
+}

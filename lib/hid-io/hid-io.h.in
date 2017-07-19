@@ -23,6 +23,10 @@
 
 #define HIDIO_VERSION_NUMBER @NUMBER_VERSION@
 
+#define HIDIO_PROTOCOL_VERSION_MAJOR 0
+#define HIDIO_PROTOCOL_VERSION_MINOR 1
+#define HIDIO_PROTOCOL_VERSION_PATCH 0
+
 #include <hid-io/io.h>
 #include <hid-io/packet.h>
 #include <hid-io/command.h>

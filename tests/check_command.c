@@ -17,7 +17,7 @@
 
 hidio_command_t hidio_commands[] = {
   HIDIO_COMMAND_SUPPORTED_IDS,
-  HIDIO_COMMAND_SUPPORTED_IDS,
+  HIDIO_COMMAND_GET_INFO,
   HIDIO_COMMAND_END
 };
 
@@ -39,8 +39,58 @@ START_TEST(test_hidio_command_supported_ids_ack) {
   ck_assert_uint_eq(hidio_packet_data_length(), sizeof(hidio_packet_id_t) * 2);
   ids = (hidio_packet_id_t *)hidio_packet_data();
   ck_assert_uint_eq(ids[0], 0x00);
-  ck_assert_uint_eq(ids[1], 0x00);
+  ck_assert_uint_eq(ids[1], 0x01);
   ck_assert(hidio_packet_is_continued() == 0);
+}
+END_TEST
+
+START_TEST(test_hidio_command_get_info) {
+  test_hidio_io_t io;
+  uint16_t v;
+  uint8_t property;
+  const char *device;
+
+  test_io_setup(&io);
+
+  hidio_packet_reset();
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_DATA);
+  hidio_packet_id_set(0x01);
+  hidio_packet_data_length_set(sizeof(uint8_t));
+  property = 0;
+  hidio_packet_data_set(&property);
+  hidio_packet_swap();
+
+  hidio_command_get_info_ack(&io.parent, NULL, 0x01);
+
+  test_io_swap(&io);
+
+  hidio_packet_recv(&io.parent);
+
+  ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
+  ck_assert(hidio_packet_id() == 0x01);
+  v = ((uint16_t *)hidio_packet_data())[0];
+  ck_assert_uint_eq(v, HIDIO_PROTOCOL_VERSION_MAJOR);
+
+  /* --- */
+  test_io_setup(&io);
+  hidio_packet_reset();
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_DATA);
+  hidio_packet_id_set(0x01);
+  hidio_packet_data_length_set(sizeof(uint8_t));
+  property = 3;
+  hidio_packet_data_set(&property);
+  hidio_packet_swap();
+
+  hidio_command_get_info_ack(&io.parent, NULL, 0x01);
+
+  test_io_swap(&io);
+
+  hidio_packet_recv(&io.parent);
+
+  ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_ACK);
+  ck_assert(hidio_packet_id() == 0x01);
+  device = (const char *)hidio_packet_data();
+  ck_assert_str_eq(device, "test-device");
 }
 END_TEST
 
@@ -50,6 +100,7 @@ static TCase *test_hidio_command (void)
 
   tests = tcase_create ("Commands");
   tcase_add_test (tests, test_hidio_command_supported_ids_ack);
+  tcase_add_test (tests, test_hidio_command_get_info);
 
   return tests;
 }
