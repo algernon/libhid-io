@@ -47,8 +47,9 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
                                      hidio_command_t *command,
                                      hidio_packet_id_t id);
 
+#define HIDIO_ID_SUPPORTED_IDS 0x00
 #define HIDIO_COMMAND_SUPPORTED_IDS                                     \
-  {0x0000,                                                              \
+  {HIDIO_ID_SUPPORTED_IDS,                                              \
    hidio_command_supported_ids_process,                                 \
    hidio_command_supported_ids_ack,                                     \
    hidio_command_no_payload_nak}
@@ -64,8 +65,9 @@ void hidio_command_get_info_nak(hidio_io_t *io,
                                 hidio_command_t *command,
                                 hidio_packet_id_t id);
 
+#define HIDIO_ID_GET_INFO 0x01
 #define HIDIO_COMMAND_GET_INFO                  \
-  {0x0001,                                      \
+  {HIDIO_ID_GET_INFO,                           \
    hidio_command_get_info_process,              \
    hidio_command_get_info_ack,                  \
    hidio_command_get_info_nak}
