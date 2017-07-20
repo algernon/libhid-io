@@ -18,6 +18,15 @@
 #include <hid-io/hid-io.h>
 #include <string.h>
 
+void hidio_command_data_prepare(hidio_packet_id_t id, const uint8_t *data, uint16_t data_length) {
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_DATA);
+  hidio_packet_id_set(id);
+  hidio_packet_continued_set(0);
+  hidio_packet_data_length_set(data_length);
+  if (data_length)
+    hidio_packet_data_set(data);
+}
+
 void hidio_command_no_payload_nak(hidio_io_t *io,
                                   hidio_command_t *command,
                                   hidio_packet_id_t id) {

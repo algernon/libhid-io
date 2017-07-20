@@ -38,6 +38,7 @@ void hidio_command_no_payload_nak(hidio_io_t *io,
                                   hidio_command_t *command,
                                   hidio_packet_id_t id);
 void hidio_command_process(hidio_io_t *io);
+void hidio_command_data_prepare(hidio_packet_id_t id, const uint8_t *data, uint16_t data_length);
 
 /* --- */
 void hidio_command_supported_ids_process(hidio_io_t *io,

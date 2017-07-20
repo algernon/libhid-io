@@ -53,11 +53,9 @@ START_TEST(test_hidio_command_get_info) {
   test_io_setup(&io);
 
   hidio_packet_reset();
-  hidio_packet_type_set(HIDIO_PACKET_TYPE_DATA);
-  hidio_packet_id_set(0x01);
-  hidio_packet_data_length_set(sizeof(uint8_t));
+
   property = 0;
-  hidio_packet_data_set(&property);
+  hidio_command_data_prepare(0x01, &property, sizeof(property));
   hidio_packet_swap();
 
   hidio_command_get_info_ack(&io.parent, NULL, 0x01);
@@ -74,11 +72,9 @@ START_TEST(test_hidio_command_get_info) {
   /* --- */
   test_io_setup(&io);
   hidio_packet_reset();
-  hidio_packet_type_set(HIDIO_PACKET_TYPE_DATA);
-  hidio_packet_id_set(0x01);
-  hidio_packet_data_length_set(sizeof(uint8_t));
+
   property = 3;
-  hidio_packet_data_set(&property);
+  hidio_command_data_prepare(0x01, &property, sizeof(property));
   hidio_packet_swap();
 
   hidio_command_get_info_ack(&io.parent, NULL, 0x01);
