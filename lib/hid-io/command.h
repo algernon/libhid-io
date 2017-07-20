@@ -56,6 +56,8 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
 
 /* --- */
 
+extern const char *hidio_device_name;
+
 void hidio_command_get_info_process(hidio_io_t *io,
                                     hidio_command_t *command);
 void hidio_command_get_info_ack(hidio_io_t *io,

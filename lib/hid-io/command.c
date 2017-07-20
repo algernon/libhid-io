@@ -132,13 +132,9 @@ void hidio_command_get_info_ack(hidio_io_t *io,
       break;
     }
   case 0x03:
-    {
-      static const char *device_name = "test-device";
-
-      hidio_packet_data_length_set(strlen(device_name));
-      hidio_packet_data_set(device_name);
-      break;
-    }
+    hidio_packet_data_length_set(strlen(hidio_device_name));
+    hidio_packet_data_set(hidio_device_name);
+    break;
   }
 
   hidio_packet_send(io);
@@ -149,3 +145,5 @@ void hidio_command_get_info_nak(hidio_io_t *io,
                                 hidio_packet_id_t id) {
   hidio_command_no_payload_nak(io, NULL, id);
 }
+
+const char *hidio_device_name __attribute__((weak)) = "<unknown device>";

@@ -17,6 +17,8 @@
 
 #define TEST_DATA_MAX 64
 
+const char *hidio_device_name = "test-device";
+
 typedef struct {
   hidio_io_t parent;
 
