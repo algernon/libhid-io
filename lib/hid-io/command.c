@@ -143,7 +143,14 @@ void hidio_command_get_info_ack(hidio_io_t *io,
 void hidio_command_get_info_nak(hidio_io_t *io,
                                 hidio_command_t *command,
                                 hidio_packet_id_t id) {
-  hidio_command_no_payload_nak(io, NULL, id);
+  uint8_t property = hidio_packet_data()[0];
+
+  hidio_packet_type_set(HIDIO_PACKET_TYPE_NAK);
+  hidio_packet_id_set(HIDIO_ID_GET_INFO);
+  hidio_packet_continued_set(0);
+  hidio_packet_data_length_set(1);
+  hidio_packet_data_set(&property);
+  hidio_packet_send(io);
 }
 
 const char *hidio_device_name __attribute__((weak)) = "<unknown device>";

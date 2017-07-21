@@ -87,6 +87,25 @@ START_TEST(test_hidio_command_get_info) {
   ck_assert(hidio_packet_id() == HIDIO_ID_GET_INFO);
   device = (const char *)hidio_packet_data();
   ck_assert_str_eq(device, "test-device");
+
+  /* --- */
+  test_io_setup(&io);
+  hidio_packet_reset();
+
+  property = 255;
+  hidio_command_data_prepare(HIDIO_ID_GET_INFO, &property, sizeof(property));
+  hidio_packet_swap();
+
+  hidio_command_process(&io.parent);
+
+  test_io_swap(&io);
+
+  hidio_packet_recv(&io.parent);
+
+  ck_assert(hidio_packet_type() == HIDIO_PACKET_TYPE_NAK);
+  ck_assert(hidio_packet_id() == HIDIO_ID_GET_INFO);
+  property = ((uint8_t *)hidio_packet_data())[0];
+  ck_assert_uint_eq(property, 255);
 }
 END_TEST
 
