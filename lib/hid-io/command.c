@@ -91,7 +91,7 @@ void hidio_command_get_info_process(hidio_io_t *io,
   uint8_t property = hidio_packet_data()[0];
 
   switch (property) {
-  case 0x00 ... 0x05:
+  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR ... HIDIO_GET_INFO_PROPERTY_HOST_SOFTWARE_NAME:
     command->ack(io, command, HIDIO_ID_GET_INFO);
     break;
   default:
@@ -110,20 +110,22 @@ void hidio_command_get_info_ack(hidio_io_t *io,
   hidio_packet_continued_set(0);
 
   switch (property) {
-  case 0x00 ... 0x02:
+  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR:
+  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MINOR:
+  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_PATCH:
     {
       uint16_t v;
 
       hidio_packet_data_length_set(sizeof(uint16_t));
 
       switch (property) {
-      case 0x00:
+      case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR:
         v = HIDIO_PROTOCOL_VERSION_MAJOR;
         break;
-      case 0x01:
+      case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MINOR:
         v = HIDIO_PROTOCOL_VERSION_MINOR;
         break;
-      case 0x02:
+      case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_PATCH:
         v = HIDIO_PROTOCOL_VERSION_PATCH;
         break;
       }
@@ -131,7 +133,7 @@ void hidio_command_get_info_ack(hidio_io_t *io,
 
       break;
     }
-  case 0x03:
+  case HIDIO_GET_INFO_PROPERTY_DEVICE_NAME:
     hidio_packet_data_length_set(strlen(hidio_device_name));
     hidio_packet_data_set(hidio_device_name);
     break;

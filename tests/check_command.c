@@ -54,7 +54,7 @@ START_TEST(test_hidio_command_get_info) {
 
   hidio_packet_reset();
 
-  property = 0;
+  property = HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR;
   hidio_command_data_prepare(HIDIO_ID_GET_INFO, &property, sizeof(property));
   hidio_packet_swap();
 
@@ -73,7 +73,7 @@ START_TEST(test_hidio_command_get_info) {
   test_io_setup(&io);
   hidio_packet_reset();
 
-  property = 3;
+  property = HIDIO_GET_INFO_PROPERTY_DEVICE_NAME;
   hidio_command_data_prepare(HIDIO_ID_GET_INFO, &property, sizeof(property));
   hidio_packet_swap();
 

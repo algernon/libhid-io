@@ -58,6 +58,16 @@ void hidio_command_supported_ids_ack(hidio_io_t *io,
 
 extern const char *hidio_device_name;
 
+enum {
+      HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR = 0x00,
+      HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MINOR = 0x01,
+      HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_PATCH = 0x02,
+      HIDIO_GET_INFO_PROPERTY_DEVICE_NAME            = 0x03,
+      HIDIO_GET_INFO_PROPERTY_HOST_OS_TYPE           = 0x03,
+      HIDIO_GET_INFO_PROPERTY_HOST_OS_VERSION        = 0x04,
+      HIDIO_GET_INFO_PROPERTY_HOST_SOFTWARE_NAME     = 0x05,
+};
+
 void hidio_command_get_info_process(hidio_io_t *io,
                                     hidio_command_t *command);
 void hidio_command_get_info_ack(hidio_io_t *io,
