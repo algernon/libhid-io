@@ -91,7 +91,7 @@ void hidio_command_get_info_process(hidio_io_t *io,
   uint8_t property = hidio_packet_data()[0];
 
   switch (property) {
-  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR ... HIDIO_GET_INFO_PROPERTY_HOST_SOFTWARE_NAME:
+  case HIDIO_GET_INFO_PROPERTY_PROTOCOL_VERSION_MAJOR ... HIDIO_GET_INFO_PROPERTY_DEVICE_NAME:
     command->ack(io, command, HIDIO_ID_GET_INFO);
     break;
   default:
