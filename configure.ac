@@ -48,32 +48,6 @@ PKG_PROG_PKG_CONFIG
 HAVE_CHECK=yes
 PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
 
-# Check for linker version script support.
-enable_value () {
-   case "$1" in
-        yes|y*)
-                echo 1
-                ;;
-        *)
-                echo 0
-                ;;
-   esac
-}
-
-ac_save_LDFLAGS=$LDFLAGS
-AC_CACHE_CHECK(whether $LD supports symbol version scripts,
-        ac_cv_prog_ld_version_script,
-        [ac_cv_prog_ld_version_script=no
-         echo "TEST { local: *; };" > conftest.ver
-         LDFLAGS="$LDFLAGS -Wl,--version-script,conftest.ver"
-         _AC_LINK_IFELSE([AC_LANG_PROGRAM()],
-                [ac_cv_prog_ld_version_script=yes], [])
-        ])
-LDFLAGS=$ac_save_LDFLAGS
-AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
-AC_DEFINE_UNQUOTED(HAVE_VERSIONING, `enable_value ${ac_cv_prog_ld_version_script}`,
-                   [Define to 1 if symbol versioning is enabled])
-
 AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 
 AC_CONFIG_FILES([

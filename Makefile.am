@@ -25,12 +25,6 @@ lib_libhid_io_la_SOURCES      = \
   lib/hid-io/command.c          \
   lib/hid-io/packet.c
 
-if HAVE_VERSIONING
-lib_libhid_io_la_LDFLAGS     += \
-	-Wl,--version-script,$(top_srcdir)/lib/hid-io/libhid-io.ver
-lib_libhid_io_la_DEPENDENCIES	= ${top_srcdir}/lib/hid-io/libhid-io.ver
-endif
-
 # -- Testcases --
 if HAVE_CHECK
 UNIT_TESTS                    = tests/check_libhid-io
@@ -57,5 +51,4 @@ check_libhid_io_srcs		= \
 EXTRA_DIST                    = \
   COPYING                       \
   README.md                     \
-  ${check_libhid_io_srcs}       \
-  lib/hid-io/libhid-io.ver
+  ${check_libhid_io_srcs}
