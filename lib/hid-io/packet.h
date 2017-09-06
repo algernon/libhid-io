@@ -21,19 +21,14 @@
 
 #include <hid-io/guards.h>
 #include <hid-io/io.h>
-#include <hid-io/platform.h>
 
 HIDIO_CPP_GUARD_START
 
-#if SIZEOF_VOID_P == 1
-#define hidio_packet_id_t uint8_t
-#endif
-
-#if SIZEOF_VOID_P == 2
+#if __SIZEOF_POINTER__ == 2
 #define hidio_packet_id_t uint16_t
 #endif
 
-#if SIZEOF_VOID_P >= 4
+#if __SIZEOF_POINTER__ >= 4
 #define hidio_packet_id_t uint32_t
 #endif
 

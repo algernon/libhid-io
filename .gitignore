@@ -1,39 +1,8 @@
-# automake artifacts
-/aclocal.m4
-/autom4te.cache/
-/autoscan.log
-/compile
-/config.guess
-/config.sub
-/configure
-/configure.scan
-/depcomp
-/install-sh
-/libtool
-/ltmain.sh
-/m4/
-/Makefile.in
-/missing
-/test-driver
-
-# configure output
-/config.log
-/config.status
-/Makefile
-
 # built stuff
 *.o
 *.lo
-.dirstamp
-.deps/
-.libs/
-stamp-h1
+*.a
 /tests/check_libhid-io
-
-/lib/libhid-io.la
-/lib/hid-io/platform.h.in
-/lib/hid-io/platform.h
 
 # Miscellaneous
 *~
-*.tar.*

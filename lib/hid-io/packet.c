@@ -130,7 +130,7 @@ hidio_packet_id_t hidio_packet_id(void) {
 }
 
 int8_t hidio_packet_id_set(const hidio_packet_id_t id) {
-#if SIZEOF_VOID_P > 2
+#if __SIZEOF_POINTER__ > 2
   if (id > 65535) {
     outgoing_packet.header.is_id_32bit = 1;
     outgoing_packet.data_id32.id = id;
